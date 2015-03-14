@@ -5,25 +5,105 @@ import java.util.Scanner;
 public class wordList 
 {
 	
-	public String inString;
-	public int numWords;
 	
-	public  String allWords[];
+	public String inString;
+	public String allWords[];
+	
+	public int numWords;
 	public int wordSyls[];
 	
-	wordList(){}
+	public boolean ioError;
+	public String theHaikus;
+	
+	
+	//constructor
+	wordList(String fName, boolean isFile)
+	{
+		//this constructor should take in a string, either a filename, for which isFile is true, 
+		//or the whole sentence, taken in from an input field or something, for which isFile is false.
+		//input file
+		
+		BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+
+		String sentence = "";
+		//String fName ="";
+		int sWords;
+		String divSentence[];
+		
+		ioError = false;
+		
+		
+		//wordList hWords = new wordList();
+
+		if(isFile)
+		{
+			try 
+			{
+				//fName = buff.readLine();
+				sentence = fileToString(fName);
+			}
+			catch (IOException ioe) 
+			{
+				System.out.println("IO ERROR!");
+				ioError = true;
+				sentence = "";
+			}
+		}
+		else
+		{
+			sentence = fName;
+		}
+
+		
+		//process file
+		
+		sentence = sentence.toLowerCase();
+		sentence = sentence.replaceAll("0", "");
+		sentence = sentence.replaceAll("1", "");
+		sentence = sentence.replaceAll("2", "");
+		sentence = sentence.replaceAll("3", "");
+		sentence = sentence.replaceAll("4", "");
+		sentence = sentence.replaceAll("5", "");
+		sentence = sentence.replaceAll("6", "");
+		sentence = sentence.replaceAll("7", "");
+		sentence = sentence.replaceAll("8", "");
+		sentence = sentence.replaceAll("9", "");
+		sentence = sentence.replaceAll("\'", "");
+		sentence = sentence.replaceAll("\"", "");
+		sentence = sentence.replaceAll("\n", " ");
+		sentence = sentence.replaceAll("\\P{Alpha}+", " ");
+
+		setInString(sentence);
+		sWords = countWords(sentence);
+		
+		//output file
+		
+		divSentence = sepWords(sentence, sWords);
+		//System.out.println("\nSEPARATED WORDS: ");
+		
+		setAllWords(divSentence);
+		setWordSyls();
+		
+		theHaikus = HaikuCollector();
+		
+		
+	}
+	
 	
 	//setters
 	public void setInString(String s)
 	{inString = s;}
+	
 	public void setNumWords(int i)
 	{numWords = i;}
+	
 	public void setAllWords(String[] s)
 	{
 		allWords = new String[numWords];
 		for(int x=0; x<numWords; x++)
 			allWords[x] = s[x];
 	}
+	
 	public void setWordSyls()
 	{
 		wordSyls = new int[numWords];
@@ -34,20 +114,27 @@ public class wordList
 		
 	}
 	
+
 	//getters
 	public String getWord(int i)
 	{
 		return allWords[i];
 	}
+	
 	public int getWordSyls(int i)
 	{
 		return wordSyls[i];
 	}
+	
 	public int getNumWords()
 	{return numWords;}
+
 	public String getInString()
 	{return inString;}
 	
+	public String getHaikus()
+	{return theHaikus;}
+
 	//string loaders
 	public static String fileToString(String fileName) throws IOException 
 	{ 
@@ -58,13 +145,13 @@ public class wordList
 		System.out.println(entireFileText);
 		return entireFileText;
 	}
-		  
-	
+
 	public String formToString()//not done
 	{
 		String outStr = "";
 		return outStr;
 	}
+	
 	
 	//character recognition
 	public boolean isaLetter(char c)
@@ -74,6 +161,7 @@ public class wordList
 		else
 			return false;
 	}
+
 	public boolean isaVowel(char c)
 	{
 		if(isaLetter(c))
@@ -84,6 +172,7 @@ public class wordList
 		else
 			return false;
 	}
+
 	public boolean isaConsonant(char c)
 	{
 		if(isaLetter(c))
@@ -121,6 +210,7 @@ public class wordList
 		numWords = nWords;
 		return nWords;//the number of words in the string.
 	}
+
 	public String[] sepWords(String inStr, int numW)
 	{
 		
@@ -141,6 +231,7 @@ public class wordList
 		
 		return splitStr;
 	}
+
 	public int countSyls(String inStr)
 	{
 		
@@ -241,7 +332,7 @@ public class wordList
 						if(x>=3)
 						{
 							char zCh = inStr.charAt(x-2);//char before ach
-							if(zCh=='d'||zCh=='t'||isaVowel(zCh))//d or t or vowel before ach
+							if(zCh=='d'||zCh=='t'||isaVowel(zCh))//d or t or vowel before ach (echoed)
 							{
 								numSyls++;
 
@@ -254,7 +345,7 @@ public class wordList
 					if(isaLetter(aCh)&&!isaLetter(bCh))//end of word
 					{
 						
-						if(aCh=='e'&&!isaLetter(bCh))//-e case, false syllable detected
+						if(aCh=='e')//-e case, false syllable detected
 						{
 							numSyls--;
 							
@@ -273,19 +364,17 @@ public class wordList
 									}
 								}
 							}
-								
 						}
 					}
-					
 				}
 		}
 		
 		//Of the 500 most commonly used words, 6 were exceptions to the rules.
 		//They are corrected here...
+		//Also, i added period, therefore, therefor, and thereby.
 
 		if(inStr.contains("beauty")&&inStr.length()==7)
 			numSyls = 2;
-		
 		if(inStr.contains("idea")&&inStr.length()==5)
 			numSyls = 3;
 		if(inStr.contains("science")&&inStr.length()==8)
@@ -296,6 +385,14 @@ public class wordList
 			numSyls = 3;
 		if(inStr.contains("hundred")&&inStr.length()==8)
 			numSyls = 2;
+		if(inStr.contains("period")&&inStr.length()==6)
+			numSyls = 3;
+		if(inStr.contains("therefore")&&inStr.length()==10)
+			numSyls = 2;
+		if(inStr.contains("therefor")&&inStr.length()==9)
+			numSyls = 2;
+		if(inStr.contains("hereby")&&(inStr.length()==8||inStr.length()==7))
+			numSyls = 2;//hereby or thereby
 		
 		
 		if(numSyls==0)//zero syllable word case
@@ -303,19 +400,68 @@ public class wordList
 		
 		return numSyls;
 	}
-	public String HaikuCollector()//not done
+
+	public String HaikuCollector()
 	{
 		String Haikus = "";
+		int sylsNeeded[] = new int[] {5, 7, 5};
+		
+		int currSyls = 0;
+		int currWord = 0;
+		int currLine = 0;
+		
+		String hLine[] = new String[] {"", "", ""};
+		
+		for(currWord = 0; currWord < numWords; currWord++)//this will go through all words
+		{
+			//System.out.println("loop1");
+			
+			for(int x = currWord; x < numWords; x++ )//this will start at each word
+			{
+				//System.out.println("loop2");
+				
+				//x = currWord;
 
+				currSyls = currSyls + wordSyls[x];//add syllables
+				hLine[currLine] = hLine[currLine] + allWords[x] + ' ';//add word to line 1
+				
+				if(currSyls == sylsNeeded[currLine])//line detected
+				{
+					currLine++;//advance to next line
+					currSyls = 0;//reset syllables
+					if(currLine == 3)//haiku detected!
+					{
+						for(int c = 0; c < 3; c++)//load lines into haikus
+						{
+							Haikus = Haikus + hLine[c] + '\n';
+							hLine[c] = "";
+						}
+						Haikus = Haikus + '\n';//extra newline between haikus
+						currLine = 0;
+						break;///////////////
+					}
+				}
+				
+				else if(currSyls > sylsNeeded[currLine])//not a haiku. next currWord.
+				{
+					currLine = 0;
+					currSyls = 0;
+					for(int c = 0; c < 3; c++)//load lines into haiku
+						hLine[c] = "";
+					
+					break;/////////////////
+					
+				}
+				
+			}//end of words, no haiku
+			currLine = 0;
+			currSyls = 0;
+			for(int c = 0; c < 3; c++)//load lines into haiku
+				hLine[c] = "";
+			}
+		
 		return Haikus;
 	}
-	public String DetectHaikus(String inStr)//not done
-	{
-		String allHaikus = "";
-		
-		return allHaikus;
-	}
-
 
 	
 	//main tester
@@ -325,82 +471,54 @@ public class wordList
 		
 		BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
 
-		String sentence = "";
-		String fName ="";
-		int sWords;
-		String divSentence[];
-		
-		
-		wordList hWords = new wordList();
+		String str = "";
+		//String fName ="";
+		//int sWords;
+		//String divSentence[];
+
 		
 		//input string
-		
-		boolean guard1 = true;
-		while(guard1)
+
+		try 
 		{
-			guard1 = false;
-			System.out.println("STRING: ");
-			try 
-			{
-				sentence = buff.readLine();
-			}
-			catch (IOException ioe) 
-			{
-			System.out.println("IO ERROR!");
-			guard1 = true;
-		    }
+			System.out.println("FILEPATH: ");
+			str = buff.readLine();
 		}
-		
-		//process string
-		
-		sentence = sentence.replaceAll("0", "");
-		sentence = sentence.replaceAll("1", "");
-		sentence = sentence.replaceAll("2", "");
-		sentence = sentence.replaceAll("3", "");
-		sentence = sentence.replaceAll("4", "");
-		sentence = sentence.replaceAll("5", "");
-		sentence = sentence.replaceAll("6", "");
-		sentence = sentence.replaceAll("7", "");
-		sentence = sentence.replaceAll("8", "");
-		sentence = sentence.replaceAll("9", "");
-		sentence = sentence.replaceAll("\'", "");
-		sentence = sentence.replaceAll("\"", "");
-		sentence = sentence.replaceAll("\n", " ");
+		catch (IOException ioe) 
+		{
+			System.out.println("IO ERROR!");
+		}
 
-
-		sentence = sentence.toLowerCase();
-
-		sentence = sentence.replaceAll("\\P{Alpha}+", " ");
 		
-		sentence.toLowerCase();
-		hWords.setInString(sentence);
-		sWords = hWords.countWords(sentence);
+		wordList hWords = new wordList(str, true);//filename
+
 		
 		//output string
 		
+		/* this segment for testing.
+		
 		System.out.println("\nWORDS: ");
-		System.out.println(sWords);
+		System.out.println(hWords.getNumWords());
 		
-		
-		divSentence = hWords.sepWords(sentence, sWords);
 		System.out.println("\nSEPARATED WORDS: ");
 		
-		hWords.setAllWords(divSentence);
-		hWords.setWordSyls();
 
 
-		for(int x=0; x<sWords; x++)
+		for(int x=0; x<hWords.getNumWords(); x++)
 		{
-			//int n = hWords.countSyls(hWords.getWord(x));
 			System.out.print(hWords.getWordSyls(x) + " ");
 			System.out.println(hWords.getWord(x) + " ");
-			//if(x%20 == 0)
-			//	System.out.println();
 		}
 		
+		*/
+		
+		hWords.HaikuCollector();
+		System.out.println();
+		System.out.print(hWords.getHaikus());
+		
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
+                              
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -408,6 +526,7 @@ public class wordList
 ////////////////////////////////////////////////////////////////////////////////////
 
 		
+		/*
 		//input file
 		guard1 = true;
 		while(guard1)
@@ -455,10 +574,6 @@ public class wordList
 		
 		//output file
 		
-		System.out.println("\nWORDS: ");
-		System.out.println(sWords);
-		
-		
 		divSentence = hWords.sepWords(sentence, sWords);
 		System.out.println("\nSEPARATED WORDS: ");
 		
@@ -479,6 +594,15 @@ public class wordList
 		System.out.println(sWords);
 		
 		
+		myHaikus = hWords.HaikuCollector();
+		System.out.println();
+		System.out.print(myHaikus);
+		
+		
+		System.out.println("\nWORDS: ");
+		System.out.println(sWords);
+		
+		*/
 
 	}
 	
