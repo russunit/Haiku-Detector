@@ -341,6 +341,9 @@ public class wordList
 				if(bCh=='a')
 				{
 					numSyls++;//syllable detected (-ia-)
+					char cCh = inStr.charAt(x+1);//char after bch
+					if(cCh == 'l')
+						numSyls--;
 				}
 
 
