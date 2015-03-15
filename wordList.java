@@ -1,3 +1,9 @@
+//Name: wordList.java
+//Author: Malcolm Chisholm
+//Java Refresher
+//Date: 3/15/14
+//This is the logic portion of the Haiku Detector.
+
 import java.io.*;
 //import java.util.*;
 import java.util.Scanner;
@@ -306,7 +312,10 @@ public class wordList
 			
 			if(aCh=='i')
 				if(bCh=='u')
+				{
 					numSyls++;//syllable detected (-iu-)
+					continue;
+				}
 			
 			if(aCh=='u')
 				if(bCh=='a')
@@ -316,7 +325,9 @@ public class wordList
 					{
 						char zCh = inStr.charAt(x-2);//char before ach
 						if(zCh=='q'||zCh=='g')
+						{
 							numSyls--;//false syllable (gua, qua)
+						}
 
 					}
 					if(inStr.length() >= 6)
@@ -326,15 +337,18 @@ public class wordList
 						char dCh = inStr.charAt(x+2);//char after cch
 
 						if(isaConsonant(cCh)||dCh=='e')
+						{
 							numSyls--;//false syllable (-uake, -uade)
-
+						}
 					}
+					continue;
 				}
 			
 			if(aCh=='y')
 				if(bCh=='i')
 				{
 					numSyls++;//syllable detected (-yi-)
+					continue;
 				}
 			
 			if(aCh=='i')
@@ -343,7 +357,10 @@ public class wordList
 					numSyls++;//syllable detected (-ia-)
 					char cCh = inStr.charAt(x+1);//char after bch
 					if(cCh == 'l')
+					{
 						numSyls--;
+					}
+					continue;
 				}
 
 
@@ -355,16 +372,18 @@ public class wordList
 				if(isaVowel(aCh)&&isaVowel(bCh)&&isaVowel(zCh))
 				{
 					numSyls++;//syllable detected (3 vowels in a row)
+					continue;
 				}
 				else if(zCh=='i')
 					if(aCh=='a')
 						if(!isaLetter(bCh)||bCh=='s')
 						{
 							numSyls++;//syllable detected (-ia)	or (-ias)
+							continue;
 						}
 				}
 			
-			if( x >= 5 && !isaLetter(bCh))//false syllable cases, syllable deleted
+			if( x >= 5 && !isaLetter(bCh))//false syllable cases
 			{
 				char zCh = inStr.charAt(x-2);//char before ach
 				char yCh = inStr.charAt(x-3);//char before zch
@@ -378,6 +397,7 @@ public class wordList
 							if(wCh=='e')// false syllable (-eless / -eness )
 							{
 								numSyls--;
+								continue;
 							}
 				
 				//if(!isaLetter(bCh))
@@ -386,6 +406,7 @@ public class wordList
 							if(isaVowel(wCh))// false syllable (-vowel-consonant-ely )
 							{
 								numSyls--;
+								continue;
 							}
 			}
 			

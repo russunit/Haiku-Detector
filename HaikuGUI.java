@@ -1,8 +1,8 @@
-//Name: ChisholmWordProcessorProgram.java
+//Name: HaikuGUI.java
 //Author: Malcolm Chisholm
-//Chapter 7 Prog. Assignment
-//Date: 3/30/14
-//This is the GUI and the whole program for the word processor.
+//Java Refresher
+//Date: 3/15/14
+//This is the GUI portion of the Haiku Detector.
 
 import java.awt.*;
 import java.awt.event.*;
@@ -40,7 +40,7 @@ public class HaikuGUI extends JFrame
 		//set it up
 		//////////////////////////////////////////////////////////
 		
-		String prompter = "Haiku Detector..........Please be patient for large files.";
+		String prompter = "Haikus will display below...........Please be patient for large files.";
 		
 	    JPanel panel = new JPanel ();
 	    panel.setBorder ( new TitledBorder ( new EtchedBorder (), prompter ) );
