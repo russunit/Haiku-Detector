@@ -14,6 +14,7 @@ public class wordList
 	
 	public boolean ioError;
 	public String theHaikus;
+	public int numHaikus;
 	
 	
 	//constructor
@@ -23,7 +24,7 @@ public class wordList
 		//or the whole sentence, taken in from an input field or something, for which isFile is false.
 		//input file
 		
-		BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+		//BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
 
 		String sentence = "";
 		//String fName ="";
@@ -39,7 +40,6 @@ public class wordList
 		{
 			try 
 			{
-				//fName = buff.readLine();
 				sentence = fileToString(fName);
 			}
 			catch (IOException ioe) 
@@ -135,6 +135,10 @@ public class wordList
 	public String getHaikus()
 	{return theHaikus;}
 
+	public int getNumHaikus()
+	{return numHaikus;}
+	
+	
 	//string loaders
 	public static String fileToString(String fileName) throws IOException 
 	{ 
@@ -142,7 +146,7 @@ public class wordList
 		String entireFileText = new Scanner(new File(fileName))
 		.useDelimiter("\\A").next();
 			 
-		System.out.println(entireFileText);
+		//System.out.println(entireFileText);
 		return entireFileText;
 	}
 
@@ -248,7 +252,9 @@ public class wordList
 			
 			if(aCh=='i')
 				if(bCh=='u')
+				{
 					numSyls++;//syllable detected (-iu-)
+				}
 			
 			if(aCh=='u')
 				if(bCh=='a')
@@ -259,6 +265,16 @@ public class wordList
 						char zCh = inStr.charAt(x-2);//char before ach
 						if(zCh=='q'||zCh=='g')
 							numSyls--;//false syllable (gua, qua)
+
+					}
+					if(inStr.length() >= 6)
+					{
+						//char zCh = inStr.charAt(x-2);//char before ach
+						char cCh = inStr.charAt(x+1);//char after bch
+						char dCh = inStr.charAt(x+2);//char after cch
+
+						if(isaConsonant(cCh)||dCh=='e')
+							numSyls--;//false syllable (-uake, -uade)
 
 					}
 				}
@@ -279,12 +295,11 @@ public class wordList
 
 				if(isaVowel(aCh)&&isaVowel(bCh)&&isaVowel(zCh))
 					numSyls++;//syllable detected (3 vowels in a row)
-				
-				if(zCh=='i')
+				else if(zCh=='i')
 					if(aCh=='a')
 						if(!isaLetter(bCh)||bCh=='s')
 							numSyls++;//syllable detected (-ia)	or (-ias)
-			}
+				}
 			
 			if( x >= 5)
 			{
@@ -410,6 +425,9 @@ public class wordList
 		int currWord = 0;
 		int currLine = 0;
 		
+		numHaikus = 0;
+		
+		
 		String hLine[] = new String[] {"", "", ""};
 		
 		for(currWord = 0; currWord < numWords; currWord++)//this will go through all words
@@ -438,6 +456,7 @@ public class wordList
 						}
 						Haikus = Haikus + '\n';//extra newline between haikus
 						currLine = 0;
+						numHaikus++;
 						break;///////////////
 					}
 				}
@@ -489,32 +508,34 @@ public class wordList
 			System.out.println("IO ERROR!");
 		}
 
+		System.out.println("Processing...");
 		
 		wordList hWords = new wordList(str, true);//filename
 
 		
 		//output string
 		
-		/* this segment for testing.
+		//this segment for testing.
 		
+		/**/
 		System.out.println("\nWORDS: ");
 		System.out.println(hWords.getNumWords());
 		
-		System.out.println("\nSEPARATED WORDS: ");
 		
-
-
+		System.out.println("\nSEPARATED WORDS: ");
 		for(int x=0; x<hWords.getNumWords(); x++)
 		{
 			System.out.print(hWords.getWordSyls(x) + " ");
 			System.out.println(hWords.getWord(x) + " ");
 		}
+		/**/
 		
-		*/
-		
-		hWords.HaikuCollector();
 		System.out.println();
 		System.out.print(hWords.getHaikus());
+		
+		System.out.print("HAIKUS: ");
+
+		System.out.print(hWords.getNumHaikus());
 		
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -525,84 +546,6 @@ public class wordList
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-		
-		/*
-		//input file
-		guard1 = true;
-		while(guard1)
-		{
-			guard1 = false;
-			System.out.println("\nFILE NAME: ");
-			try 
-			{
-				fName = buff.readLine();
-				sentence = fileToString(fName);
-			}
-			catch (IOException ioe) 
-			{
-			System.out.println("IO ERROR!");
-			guard1 = true;
-		    }
-		}
-		
-		//process file
-		
-		sentence = sentence.replaceAll("0", "");
-		sentence = sentence.replaceAll("1", "");
-		sentence = sentence.replaceAll("2", "");
-		sentence = sentence.replaceAll("3", "");
-		sentence = sentence.replaceAll("4", "");
-		sentence = sentence.replaceAll("5", "");
-		sentence = sentence.replaceAll("6", "");
-		sentence = sentence.replaceAll("7", "");
-		sentence = sentence.replaceAll("8", "");
-		sentence = sentence.replaceAll("9", "");
-		
-		
-		sentence = sentence.replaceAll("\'", "");
-		sentence = sentence.replaceAll("\"", "");
-		sentence = sentence.replaceAll("\n", " ");
-
-
-		sentence = sentence.toLowerCase();
-
-		sentence = sentence.replaceAll("\\P{Alpha}+", " ");////////////////////////////////////////
-		
-		sentence.toLowerCase();
-		hWords.setInString(sentence);
-		sWords = hWords.countWords(sentence);
-		
-		//output file
-		
-		divSentence = hWords.sepWords(sentence, sWords);
-		System.out.println("\nSEPARATED WORDS: ");
-		
-		hWords.setAllWords(divSentence);
-		hWords.setWordSyls();
-
-
-		for(int x=0; x<sWords; x++)
-		{
-			//int n = hWords.countSyls(hWords.getWord(x));
-			System.out.print(hWords.getWordSyls(x) + " ");
-			System.out.print(hWords.getWord(x) + " ");
-			//if(x%20 == 0)
-				System.out.println();
-		}
-		
-		System.out.println("\nWORDS: ");
-		System.out.println(sWords);
-		
-		
-		myHaikus = hWords.HaikuCollector();
-		System.out.println();
-		System.out.print(myHaikus);
-		
-		
-		System.out.println("\nWORDS: ");
-		System.out.println(sWords);
-		
-		*/
 
 	}
 	
