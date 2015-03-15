@@ -1,156 +1,109 @@
-//Name: BmiProgram.java
+//Name: ChisholmWordProcessorProgram.java
 //Author: Malcolm Chisholm
-//Prog. Assignment #1
-//Date: 1/25/14
-//This program will take a user's input height and weight, calculate the BMI,
-//and give a status report on your BMI. In order to accept either metric or
-//imperial values, I used two JComboBoxes to select the desired units.
-
-
+//Chapter 7 Prog. Assignment
+//Date: 3/30/14
+//This is the GUI and the whole program for the word processor.
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.*;
+import java.io.*;
 
 import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.*;
+import javax.swing.JOptionPane;
+
 
 public class HaikuGUI extends JFrame
 {
-	private JFrame frame = new JFrame ("Haiku Detector");
-	
-	private JLabel inputL, outputL;
+	public JTextArea pad = new JTextArea(24, 58);
+	public JFileChooser files = new JFileChooser(System.getProperty("user.dir"));
 
-	private JTextField inputTF;
-	private JTextArea outputTA;
+	public JScrollPane scroll = new JScrollPane (pad);
 
-	private JButton detectB;
-
-
-	private DetectButtonHandler detectHandler;
-
-	private static final int WIDTH = 500;
-	private static final int HEIGHT = 700;
-
-	public boolean kilos=true, meters=true;
 
 	public HaikuGUI()
 	{
-		//create Labels
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JMenu file = new JMenu("File");
 
-		inputL = new JLabel(" Enter full file path:", SwingConstants.LEFT);
-		outputL = new JLabel(" Haikus Detected:", SwingConstants.LEFT);
+		JMenuBar bar = new JMenuBar();
+		bar.add(file);
 
+		//add choices for File
+		OpenAction open = new OpenAction();
+		file.add(open).setMnemonic('O');
 
-		//create Text Fields / Areas
-
-		inputTF = new JTextField(10);
-		outputTA = new JTextArea(10, 10);
-
-		//create evaluation button
-
-		detectB = new JButton("Detect Haikus");
-		detectHandler = new DetectButtonHandler();
-		detectB.addActionListener(detectHandler);
-
-
-		//add item listeners
-
-		//weightUnit.addItemListener(this);
-		//heightUnit.addItemListener(this);
-
-		//set title, layout, and add items to the pane
-
-		setTitle("Haiku Detector");
-
-		//Container pane = getContentPane();
-
-		//frame.setLayout(new GridLayout(4,3));
-
-		inputL.setSize(120,30);
-		inputTF.setSize(300,30);
-		outputL.setSize(120,30);
-		outputTA.setSize(450,450);
-		detectB.setSize(120,30);
-
-		inputL.setLocation(10,15);
-		inputTF.setLocation(10,40);
-		outputL.setLocation(10, 115);
-		outputTA.setLocation(10,140);
-		detectB.setLocation(300,40);
+		//set it up
+		//////////////////////////////////////////////////////////
 		
-
-		inputTF.setEditable(true);
-		outputTA.setEditable(false);
+		String prompter = "Haiku Detector..........Please be patient for large files.";
 		
-		outputTA.setSize(450,500);    
+	    JPanel panel = new JPanel ();
+	    panel.setBorder ( new TitledBorder ( new EtchedBorder (), prompter ) );
 
-		outputTA.setLineWrap(true);
-		outputTA.setEditable(false);
-		outputTA.setVisible(true);
+	    // create the panel components
 
-	    //FRAME
-		frame.setSize(800,500);
-		frame.setResizable(false);
-		frame.setLayout(null);
+	    pad.setEditable ( false ); // set textArea non-editable
+	    JScrollPane scroll = new JScrollPane ( pad );
+        scroll.setBounds(10, 11, 455, 249);   
+	    scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
-		//
+	    //Add Textarea in to panel
+	    panel.add ( scroll );
 
-		//TEXT AREA
+	    // My code
+	    JFrame frame = new JFrame ();
+	    frame.add ( panel );
+	    frame.pack ();
+	    frame.setLocationRelativeTo ( null );
+		frame.setSize(850, 500);
 
-		outputTA.setLineWrap(true);
-		outputTA.setEditable(false);
-		outputTA.setVisible(true);
+	    frame.setTitle("Haiku Detector");
 
-		JScrollPane scroll = new JScrollPane (outputTA);
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-		frame.add(scroll);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setJMenuBar(bar);
 		
-		frame.add(inputL);
-		frame.add(inputTF);
-		frame.add(outputL);
-		frame.add(outputTA);
-		frame.add(detectB);
+	    frame.setVisible ( true );
 
-
-		setSize(WIDTH, HEIGHT);
-		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		
 	}
 
+	
 
-
-	private class DetectButtonHandler implements ActionListener
+	class OpenAction extends AbstractAction
 	{
+		public OpenAction()
+		{
+			super("Open...");
+		}
 		public void actionPerformed(ActionEvent e)
 		{
-			String inString = " ";
-			inString = inputTF.getText();
+			///open
+			if(files.showOpenDialog(null)==JFileChooser.APPROVE_OPTION)
+			{
+				pad.setText("Processing, please wait...");
 
-			wordList haikuWords = new wordList(inString, true);
-			
-
-			outputTA.setText(haikuWords.getHaikus());
+				wordList wL = new wordList(files.getSelectedFile().getAbsolutePath(), true);
+				pad.setText(wL.getHaikus());
+			}
 		}
 	}
 
 
 
 
+
 	public static void main(String[] args)
 	{
-		HaikuGUI rectObject = new HaikuGUI();
+
+		HaikuGUI wpad = new HaikuGUI();
 	}
 
-
-
-
-	
 }
-
-
 
 
 
