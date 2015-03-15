@@ -117,14 +117,10 @@ public class wordList
 
 	//getters
 	public String getWord(int i)
-	{
-		return allWords[i];
-	}
+	{return allWords[i];}
 	
 	public int getWordSyls(int i)
-	{
-		return wordSyls[i];
-	}
+	{return wordSyls[i];}
 	
 	public int getNumWords()
 	{return numWords;}
@@ -249,81 +245,6 @@ public class wordList
 			char aCh = inStr.charAt(x-1);
 			char bCh = inStr.charAt(x);
 			
-			
-			if(aCh=='i')
-				if(bCh=='u')
-				{
-					numSyls++;//syllable detected (-iu-)
-				}
-			
-			if(aCh=='u')
-				if(bCh=='a')
-				{
-					numSyls++;//syllable detected (-ua-)
-					if(x >= 3)
-					{
-						char zCh = inStr.charAt(x-2);//char before ach
-						if(zCh=='q'||zCh=='g')
-							numSyls--;//false syllable (gua, qua)
-
-					}
-					if(inStr.length() >= 6)
-					{
-						//char zCh = inStr.charAt(x-2);//char before ach
-						char cCh = inStr.charAt(x+1);//char after bch
-						char dCh = inStr.charAt(x+2);//char after cch
-
-						if(isaConsonant(cCh)||dCh=='e')
-							numSyls--;//false syllable (-uake, -uade)
-
-					}
-				}
-			
-			if(aCh=='y')
-				if(bCh=='i')
-					numSyls++;//syllable detected (-yi-)
-			
-			if(aCh=='i')
-				if(bCh=='a')
-					numSyls++;//syllable detected (-ia-)
-
-
-			
-			if(x >= 3)
-			{
-				char zCh = inStr.charAt(x-2);//char before ach
-
-				if(isaVowel(aCh)&&isaVowel(bCh)&&isaVowel(zCh))
-					numSyls++;//syllable detected (3 vowels in a row)
-				else if(zCh=='i')
-					if(aCh=='a')
-						if(!isaLetter(bCh)||bCh=='s')
-							numSyls++;//syllable detected (-ia)	or (-ias)
-				}
-			
-			if( x >= 5)
-			{
-				char zCh = inStr.charAt(x-2);//char before ach
-				char yCh = inStr.charAt(x-3);//char before zch
-				char xCh = inStr.charAt(x-4);//char before ych
-				char wCh = inStr.charAt(x-5);//char before xch
-
-				
-				if(!isaLetter(bCh))
-					if(aCh=='s'&&zCh=='s')
-						if(yCh=='e'&&(xCh=='l'||xCh=='n'))
-							if(wCh=='e')// false syllable (-eless / -eness )
-								numSyls--;
-				
-				if(!isaLetter(bCh))
-					if(aCh=='y'&&zCh=='l')
-						if(yCh=='e'&&isaConsonant(xCh))
-							if(isaVowel(wCh))// false syllable (-vowel-consonant-ely )
-								numSyls--;
-			}
-			
-				
-			
 			if(isaVowel(aCh))
 				if(!isaVowel(bCh))//syllable detected
 				{
@@ -337,7 +258,6 @@ public class wordList
 							char zCh = inStr.charAt(x-2);//char before ach
 							if(zCh=='c'||zCh=='g'||zCh=='h'||zCh=='j'||zCh=='s'||zCh=='x'||isaVowel(zCh))//soft consonant before ach
 								numSyls++;
-
 						}
 					
 					if((aCh=='e'&&bCh=='d')&&!isaLetter(inStr.charAt(x+1)))//-ed case, false syllable detected
@@ -382,36 +302,122 @@ public class wordList
 						}
 					}
 				}
-		}
+			
+			
+			if(aCh=='i')
+				if(bCh=='u')
+					numSyls++;//syllable detected (-iu-)
+			
+			if(aCh=='u')
+				if(bCh=='a')
+				{
+					numSyls++;//syllable detected (-ua-)
+					if(x >= 3)
+					{
+						char zCh = inStr.charAt(x-2);//char before ach
+						if(zCh=='q'||zCh=='g')
+							numSyls--;//false syllable (gua, qua)
+
+					}
+					if(inStr.length() >= 6)
+					{
+						//char zCh = inStr.charAt(x-2);//char before ach
+						char cCh = inStr.charAt(x+1);//char after bch
+						char dCh = inStr.charAt(x+2);//char after cch
+
+						if(isaConsonant(cCh)||dCh=='e')
+							numSyls--;//false syllable (-uake, -uade)
+
+					}
+				}
+			
+			if(aCh=='y')
+				if(bCh=='i')
+				{
+					numSyls++;//syllable detected (-yi-)
+				}
+			
+			if(aCh=='i')
+				if(bCh=='a')
+				{
+					numSyls++;//syllable detected (-ia-)
+				}
+
+
+			
+			if(x >= 3)
+			{
+				char zCh = inStr.charAt(x-2);//char before ach
+
+				if(isaVowel(aCh)&&isaVowel(bCh)&&isaVowel(zCh))
+				{
+					numSyls++;//syllable detected (3 vowels in a row)
+				}
+				else if(zCh=='i')
+					if(aCh=='a')
+						if(!isaLetter(bCh)||bCh=='s')
+						{
+							numSyls++;//syllable detected (-ia)	or (-ias)
+						}
+				}
+			
+			if( x >= 5 && !isaLetter(bCh))//false syllable cases, syllable deleted
+			{
+				char zCh = inStr.charAt(x-2);//char before ach
+				char yCh = inStr.charAt(x-3);//char before zch
+				char xCh = inStr.charAt(x-4);//char before ych
+				char wCh = inStr.charAt(x-5);//char before xch
+
+				
+				//if(!isaLetter(bCh))
+					if(aCh=='s'&&zCh=='s')
+						if(yCh=='e'&&(xCh=='l'||xCh=='n'))
+							if(wCh=='e')// false syllable (-eless / -eness )
+							{
+								numSyls--;
+							}
+				
+				//if(!isaLetter(bCh))
+					if(aCh=='y'&&zCh=='l')
+						if(yCh=='e'&&isaConsonant(xCh))
+							if(isaVowel(wCh))// false syllable (-vowel-consonant-ely )
+							{
+								numSyls--;
+							}
+			}
+			
+				
+			
+		}//big forloop ends
 		
 		//Of the 500 most commonly used words, 6 were exceptions to the rules.
 		//They are corrected here...
 		//Also, i added period, therefore, therefor, and thereby.
 
 		if(inStr.contains("beauty")&&inStr.length()==7)
-			numSyls = 2;
+			return 2; 
 		if(inStr.contains("idea")&&inStr.length()==5)
-			numSyls = 3;
+			return 3;
 		if(inStr.contains("science")&&inStr.length()==8)
-			numSyls = 2;
+			return 2;
 		if(inStr.contains("special")&&inStr.length()==8)
-			numSyls = 2;
+			return 2;
 		if(inStr.contains("area")&&inStr.length()==5)
-			numSyls = 3;
+			return 3;
 		if(inStr.contains("hundred")&&inStr.length()==8)
-			numSyls = 2;
+			return 2;
 		if(inStr.contains("period")&&inStr.length()==6)
-			numSyls = 3;
+			return 3;
 		if(inStr.contains("therefore")&&inStr.length()==10)
-			numSyls = 2;
+			return 2;
 		if(inStr.contains("therefor")&&inStr.length()==9)
-			numSyls = 2;
+			return 2;
 		if(inStr.contains("hereby")&&(inStr.length()==8||inStr.length()==7))
-			numSyls = 2;//hereby or thereby
+			return 2;//hereby or thereby
 		
 		
-		if(numSyls==0)//zero syllable word case
-			numSyls++;
+		if(numSyls==0)//zero syllable word case, return one
+			return 1;
 		
 		return numSyls;
 	}
