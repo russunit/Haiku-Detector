@@ -12,7 +12,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 
-@SuppressWarnings("serial")//added by suggestion of eclipse
+@SuppressWarnings("serial")//to suppress warning
 public class HaikuGUI extends JFrame
 {
 	public JTextArea pad = new JTextArea(24, 58);
@@ -36,7 +36,7 @@ public class HaikuGUI extends JFrame
 		//set it up
 		//////////////////////////////////////////////////////////
 		
-		String prompter = "Haikus will display below...........Please be patient for large files.";
+		String prompter = "Haikus will display below........... Please be patient for large files.";
 		
 	    JPanel panel = new JPanel ();
 	    panel.setBorder ( new TitledBorder ( new EtchedBorder (), prompter ) );
@@ -48,7 +48,7 @@ public class HaikuGUI extends JFrame
         scroll.setBounds(10, 11, 455, 249);   
 	    scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 
-	    //Add Textarea in to panel
+	    //Add scroll in to panel
 	    panel.add ( scroll );
 
 	    // My code
@@ -78,13 +78,19 @@ public class HaikuGUI extends JFrame
 		}
 		public void actionPerformed(ActionEvent e)
 		{
+			pad.setText("Processing file...");
+
 			///open
 			if(files.showOpenDialog(null)==JFileChooser.APPROVE_OPTION)
 			{
-				pad.setText("Processing, please wait...");
+
 
 				wordList wL = new wordList(files.getSelectedFile().getAbsolutePath(), true);
 				pad.setText(files.getSelectedFile().getAbsolutePath() + "\n\n" + wL.getHaikus());
+			}
+			else
+			{
+				pad.setText("");
 			}
 		}
 	}
@@ -96,7 +102,7 @@ public class HaikuGUI extends JFrame
 	public static void main(String[] args)
 	{
 
-		@SuppressWarnings("unused")
+		@SuppressWarnings("unused")//to suppress warning
 		HaikuGUI wpad = new HaikuGUI();
 	}
 
