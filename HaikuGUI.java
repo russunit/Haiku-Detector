@@ -4,19 +4,15 @@
 //Date: 3/15/14
 //This is the GUI portion of the Haiku Detector.
 
-import java.awt.*;
+
 import java.awt.event.*;
-import java.awt.print.*;
-import java.io.*;
 
 import javax.swing.*;
-import javax.swing.text.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.*;
-import javax.swing.JOptionPane;
 
 
+@SuppressWarnings("serial")//added by suggestion of eclipse
 public class HaikuGUI extends JFrame
 {
 	public JTextArea pad = new JTextArea(24, 58);
@@ -88,7 +84,7 @@ public class HaikuGUI extends JFrame
 				pad.setText("Processing, please wait...");
 
 				wordList wL = new wordList(files.getSelectedFile().getAbsolutePath(), true);
-				pad.setText(wL.getHaikus());
+				pad.setText(files.getSelectedFile().getAbsolutePath() + "\n\n" + wL.getHaikus());
 			}
 		}
 	}
@@ -100,6 +96,7 @@ public class HaikuGUI extends JFrame
 	public static void main(String[] args)
 	{
 
+		@SuppressWarnings("unused")
 		HaikuGUI wpad = new HaikuGUI();
 	}
 
